@@ -30,7 +30,7 @@ int main() {
     printf("Escolha a regiao de entrega: ");
     scanf("%d", &regiao);
 
-    // C�lculo do frete
+    // Cálculo do frete
     
     switch (regiao) {
         case 1: // Sul
@@ -54,7 +54,7 @@ int main() {
             return 0;
     }
 
-    // Calculo preço total
+    // Cálculo preço total
     
     precoTotal = precoProduto + precoFrete;
 
@@ -73,7 +73,7 @@ int main() {
    diaEntrega = dia + 7;
    mesEntrega = mes;
 
-   // Tratamento simples para mudan�a de m�s
+   // Tratamento simples para mudança de mês
    
     if (diaEntrega > 30) {
      diaEntrega = 1;
@@ -84,7 +84,6 @@ int main() {
     }
 }
     // LIMPAR TELA ANTES DO RESUMO
-  
     system("cls");
     
     // RESUMO DA COMPRA
@@ -94,7 +93,7 @@ int main() {
     printf("Codigo do produto: %d\n", codigo);
     printf("Nome do produto: %s\n", nome);
     printf("Peso do produto: %.2f Kg\n", peso);
-    printf("Preco do produto: R$ %.2f\n", precoProduto);
+    printf("Preço do produto: R$ %.2f\n", precoProduto);
 
     printf("Regiao de entrega: ");
     switch (regiao) {
@@ -104,8 +103,8 @@ int main() {
         case 4: printf("Nordeste\n"); break;
     }
 
-    printf("Preco do frete: R$ %.2f\n", precoFrete);
-    printf("Preco total da compra: R$ %.2f\n", precoTotal);
+    printf("Preço do frete: R$ %.2f\n", precoFrete);
+    printf("Preço total da compra: R$ %.2f\n", precoTotal);
 
     printf("Data da compra: %d/%d \n",
            dia, mes);
