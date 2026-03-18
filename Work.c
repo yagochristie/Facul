@@ -13,11 +13,11 @@ int main() {
 
     printf("Codigo do produto: ");
     scanf("%d", &codigo);
-    getchar(); // limpar buffer
+    getchar(); 
 
     printf("Nome do produto: ");
     fgets(nome, 50, stdin);
-    nome[strcspn(nome, "\n")] = 0; // remove \n
+    nome[strcspn(nome, "\n")] = 0; 
 
     printf("Peso do produto (Kg): ");
     scanf("%f", &peso);
@@ -29,9 +29,7 @@ int main() {
     printf("[1] Sul\n[2] Sudeste\n[3] Norte\n[4] Nordeste\n");
     printf("Escolha a regiao de entrega: ");
     scanf("%d", &regiao);
-
-    // Cálculo do frete
-    
+	
     switch (regiao) {
         case 1: // Sul
             precoFrete = (peso > 2) ? 50 : 30;
@@ -53,27 +51,18 @@ int main() {
             printf("Regiao invalida!\n");
             return 0;
     }
-
-    // Cálculo preço total
     
     precoTotal = precoProduto + precoFrete;
 
     // Data e hora da compra
-
     printf("\nDia da compra (DD MM): ");
     scanf("%d %d", &dia, &mes);
     
-
     printf("Hora da compra (HH MM): ");
     scanf("%d %d", &hora, &minuto);
 
-
-   // Data prevista de ENTREGA (sempre dia seguinte)
-
    diaEntrega = dia + 7;
    mesEntrega = mes;
-
-   // Tratamento simples para mudança de mês
    
     if (diaEntrega > 30) {
      diaEntrega = 1;
@@ -83,11 +72,9 @@ int main() {
         mesEntrega = 1;
     }
 }
-    // LIMPAR TELA ANTES DO RESUMO
     system("cls");
     
-    // RESUMO DA COMPRA
-
+    // RESUMO 
     printf("      RESUMO FINAL\n");
     printf("=========================\n");
     printf("Codigo do produto: %d\n", codigo);
