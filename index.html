@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fask Imobiliária - Imóveis de Alto Padrão</title>
+    <!-- Carrega Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Cor de destaque da marca: Âmbar/Dourado */
+        .fask-accent {
+            color: #FBBF24; /* amber-400 */
+        }
+        /* Cor primária: Azul Marinho Sutil */
+        .fask-primary {
+            background-color: #1E3A8A; /* blue-800 */
+        }
+        /* Sombra premium para cards */
+        .card-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        /* Estilos do Modal (Pop-up de detalhes) */
+        .modal-overlay {
+            background-color: rgba(17, 24, 39, 0.85); 
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transform: translateY(20px);
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+        .modal-shown .modal-content {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Cabeçalho (Fixo e Elegante) -->
+    <header class="bg-white shadow-lg sticky top-0 z-50 border-t-4 border-amber-400">
+        <div class="container mx-auto max-w-7xl p-4 flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold text-blue-900">FASK <span class="fask-accent">IMOBILIÁRIA</span></h1>
+            <nav class="space-x-8 hidden md:block">
+                <a href="#lista-imoveis" class="text-gray-700 hover:text-blue-800 transition duration-300 font-medium">Propriedades</a>
+                <a href="#por-que-escolher" class="text-gray-700 hover:text-blue-800 transition duration-300 font-medium">Benefícios</a>
+                <a href="#contato" class="bg-blue-800 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition duration-300 shadow-md transform hover:scale-105">Contato Premium</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Carrossel de Destaque (Hero Section) -->
+    <section id="hero" class="relative h-[65vh] lg:h-[75vh] overflow-hidden bg-gray-900">
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://placehold.co/1920x800/1E3A8A/FFFFFF?text=Curadoria+Exclusiva\\n+Imóveis+de+Luxo');">
+            <div class="absolute inset-0 bg-blue-900 opacity-70"></div>
+        </div>
+        <div class="container mx-auto max-w-7xl relative z-10 flex flex-col justify-center items-center h-full text-center p-6">
+            <h2 class="text-7xl font-black text-white mb-4 drop-shadow-xl tracking-tight">Viver o Luxo Carioca</h2>
+            <p class="text-xl text-amber-300 mb-10 max-w-3xl font-light">Apresentamos a você uma seleção rigorosa de imóveis que definem o padrão de excelência no Rio de Janeiro.</p>
+            <a href="#lista-imoveis" class="bg-amber-400 text-gray-900 font-extrabold py-3 px-10 rounded-xl hover:bg-amber-500 transition duration-300 shadow-2xl transform hover:scale-105">
+                VER OS 10 DESTAQUES
+            </a>
+        </div>
+    </section>
+
+    <!-- Conteúdo Principal - Lista de Imóveis -->
+    <main class="container mx-auto max-w-7xl p-6 mt-16">
+        
+        <!-- Barra de Busca/Filtro -->
+        <section class="bg-white p-8 rounded-xl shadow-2xl mb-12 border-t-4 border-blue-800">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">Encontre o Imóvel Perfeito</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <input type="text" id="filter-endereco" placeholder="Endereço, Bairro ou Palavra-chave..." 
+                       class="col-span-1 md:col-span-2 p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <select id="filter-quartos" class="p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Quartos (Todos)</option>
+                    <option value="1">1 Quarto</option>
+                    <option value="2">2 Quartos</option>
+                    <option value="3">3+ Quartos</option>
+                </select>
+                <select id="filter-valor" class="p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Valor (Qualquer)</option>
+                    <option value="3000">Até R$ 3.000</option>
+                    <option value="5000">Até R$ 5.000</option>
+                    <option value="max">Acima de R$ 5.000</option>
+                </select>
+            </div>
+        </section>
+
+        <h2 id="lista-imoveis" class="text-4xl font-extrabold text-gray-800 mb-10 border-b-4 pb-2 border-amber-400 inline-block">Seleção FASK</h2>
+
+        <!-- Lista de Imóveis (Grid) -->
+        <section>
+            <div id="imoveis-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Imóveis serão injetados aqui -->
+                <p id="loading-message" class="col-span-full text-center text-gray-500 text-lg p-10">
+                    <svg class="animate-spin h-6 w-6 mr-3 inline-block text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Carregando imóveis...
+                </p>
+            </div>
+            
+            <!-- Botão Carregar Mais -->
+            <div id="load-more-container" class="flex justify-center">
+                <!-- O botão será inserido via JavaScript -->
+            </div>
+
+            <div id="no-results-message" class="hidden col-span-full text-center text-gray-500 text-xl p-20">
+                <p>Nenhum imóvel encontrado com os critérios de busca. Tente refinar a pesquisa.</p>
+            </div>
+            <div id="error-message" class="hidden col-span-full text-center text-red-600 text-xl p-20 bg-red-100 rounded-lg">
+                <p>⚠️ Não foi possível carregar os imóveis. Certifique-se de que o **server.py** está em execução na porta 5000.</p>
+            </div>
+        </section>
+
+        <!-- Seção de Vantagens e Credibilidade -->
+        <section id="por-que-escolher" class="mt-24 py-16 bg-blue-900 rounded-2xl shadow-2xl">
+            <h2 class="text-4xl font-bold text-center text-white mb-12">O Padrão Fask</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto px-4">
+                <!-- Vantagem 1 -->
+                <div class="text-center p-8 bg-white rounded-xl shadow-xl hover:shadow-2xl transition duration-300 border-b-4 border-amber-400">
+                    <span class="text-5xl fask-accent mb-3 inline-block">✨</span>
+                    <h4 class="font-bold text-xl text-gray-900 mb-2">Exclusive Deal Flow</h4>
+                    <p class="text-base text-gray-600">Acesso a propriedades que não estão no mercado tradicional.</p>
+                </div>
+                <!-- Vantagem 2 -->
+                <div class="text-center p-8 bg-white rounded-xl shadow-xl hover:shadow-2xl transition duration-300 border-b-4 border-amber-400">
+                    <span class="text-5xl fask-accent mb-3 inline-block">🔒</span>
+                    <h4 class="font-bold text-xl text-gray-900 mb-2">Negociação Discreta</h4>
+                    <p class="text-base text-gray-600">Total sigilo e profissionalismo em todas as etapas da transação.</p>
+                </div>
+                <!-- Vantagem 3 -->
+                <div class="text-center p-8 bg-white rounded-xl shadow-xl hover:shadow-2xl transition duration-300 border-b-4 border-amber-400">
+                    <span class="text-5xl fask-accent mb-3 inline-block">🧭</span>
+                    <h4 class="font-bold text-xl text-gray-900 mb-2">Assessoria Completa</h4>
+                    <p class="text-base text-gray-600">Suporte jurídico e financeiro para uma aquisição sem preocupações.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Rodapé Completo -->
+    <footer id="contato" class="mt-20 bg-gray-900 p-12 text-gray-400">
+        <div class="container mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-gray-700 pb-10 mb-10">
+            <div>
+                <h5 class="text-xl font-extrabold text-white mb-4">FASK <span class="fask-accent">IMOBILIÁRIA</span></h5>
+                <p class="text-sm">Parceiro ideal para quem busca o extraordinário em imóveis de alto padrão.</p>
+            </div>
+            <div>
+                <h5 class="font-semibold text-white mb-4 border-l-2 border-amber-400 pl-3">Contato</h5>
+                <p class="text-sm">Email: contato@faskimobiliaria.com.br</p>
+                <p class="text-sm">Telefone: (21) 99876-5432</p>
+            </div>
+            <div>
+                <h5 class="font-semibold text-white mb-4 border-l-2 border-amber-400 pl-3">Sede RJ</h5>
+                <p class="text-sm">Av. Vieira Souto, 500 - Ipanema</p>
+                <p class="text-sm">Rio de Janeiro - RJ</p>
+            </div>
+            <div>
+                <h5 class="font-semibold text-white mb-4 border-l-2 border-amber-400 pl-3">Siga-nos</h5>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-amber-400 transition">Instagram</a></li>
+                    <li><a href="#" class="hover:text-amber-400 transition">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center text-sm text-gray-500">
+            <p>© 2024 Fask Imobiliária. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Modal de Detalhes do Imóvel -->
+    <div id="imovel-modal" class="modal-overlay fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeModal()">
+        <div id="modal-content" class="modal-content bg-white w-full max-w-4xl rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="relative">
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-700 hover:text-gray-900 z-10 bg-white rounded-full p-2 shadow-lg transition duration-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+
+                <!-- Imagem de Destaque no Modal -->
+                <img id="modal-image" src="" alt="Imagem do Imóvel" class="w-full h-80 object-cover rounded-t-xl">
+            </div>
+            
+            <div class="p-8">
+                <h3 id="modal-endereco" class="text-3xl font-bold text-gray-900 mb-3"></h3>
+                <p id="modal-valor" class="text-3xl font-extrabold fask-accent mb-6"></p>
+
+                <!-- Recursos Detalhados -->
+                <div class="flex flex-wrap gap-6 mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <div class="flex items-center text-gray-700 font-medium">
+                        <span class="text-2xl text-blue-800 mr-2">🛏️</span>
+                        <span id="modal-quartos" class="text-lg"></span>
+                    </div>
+                    <div class="flex items-center text-gray-700 font-medium">
+                        <span class="text-2xl text-blue-800 mr-2">🛁</span>
+                        <span id="modal-banheiros" class="text-lg"></span>
+                    </div>
+                    <div class="flex items-center text-gray-700 font-medium">
+                        <span class="text-2xl text-blue-800 mr-2">📐</span>
+                        <span id="modal-area" class="text-lg"></span>
+                    </div>
+                    <div class="flex items-center text-gray-700 font-medium">
+                        <span class="text-2xl text-blue-800 mr-2">🗓️</span>
+                        <span id="modal-entrada" class="text-lg"></span>
+                    </div>
+                </div>
+
+                <!-- Descrição Completa -->
+                <div class="mb-8">
+                    <h4 class="text-xl font-semibold text-gray-800 mb-3 border-b-2 border-amber-100 pb-1">Descrição Detalhada:</h4>
+                    <p id="modal-descricao" class="text-gray-700 leading-relaxed text-base"></p>
+                </div>
+                
+                <!-- Call to Action -->
+                <button class="w-full bg-amber-500 text-gray-900 font-bold py-4 px-6 rounded-xl hover:bg-amber-600 transition duration-300 shadow-xl text-xl">
+                    Solicitar Tour Privado e Mais Informações
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lógica JavaScript (Paginação e Modal) -->
+    <script>
+        // O URL da API deve estar rodando na porta 5000 (necessário rodar o server.py)
+        const API_URL = "http://127.0.0.1:5000/imoveis";
+        const PROPERTIES_PER_LOAD = 10; // Número de imóveis a carregar por clique
+
+        const imoveisListElement = document.getElementById('imoveis-list');
+        const loadingMessage = document.getElementById('loading-message');
+        const errorMessage = document.getElementById('error-message');
+        const noResultsMessage = document.getElementById('no-results-message');
+        const loadMoreContainer = document.getElementById('load-more-container');
+
+        const filterEndereco = document.getElementById('filter-endereco');
+        const filterQuartos = document.getElementById('filter-quartos');
+        const filterValor = document.getElementById('filter-valor');
+
+        let allImoveis = []; 
+        let filteredImoveisGlobal = []; 
+        let displayedCount = 0; 
+
+        // Referências do Modal
+        const modal = document.getElementById('imovel-modal');
+        const modalContent = document.getElementById('modal-content');
+
+        // Adiciona event listeners para os filtros
+        filterEndereco.addEventListener('input', applyFilters);
+        filterQuartos.addEventListener('change', applyFilters);
+        filterValor.addEventListener('change', applyFilters);
+
+        /**
+         * Gera o código SVG para um ícone de recurso.
+         * @param {string} pathD - O atributo 'd' do SVG.
+         * @param {string} text - Texto a ser exibido ao lado do ícone.
+         */
+        function getIconHtml(pathD, text) {
+            return `
+                <span class="flex items-center text-sm font-medium text-gray-700">
+                    <svg class="w-4 h-4 mr-1 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${pathD}"></path>
+                    </svg>
+                    ${text}
+                </span>
+            `;
+        }
+        
+        /**
+         * Renderiza um card de imóvel conciso.
+         * @param {Object} imovel - Objeto do imóvel.
+         */
+        function renderImovelCard(imovel) {
+            // Simulação de Dados para Features (mantido do server.py)
+            const matchQuartos = imovel.descricao ? imovel.descricao.match(/(\d+)\s*quartos?/) : null;
+            const numQuartos = matchQuartos ? parseInt(matchQuartos[1], 10) : (imovel.id % 3) + 1; 
+            const numBanheiros = Math.floor(Math.random() * 2) + 1;
+            const areaM2 = (Math.floor(Math.random() * 50) + 60) + (imovel.id * 2 % 10); 
+            const status = imovel.id % 5 === 0 ? 'NOVO' : (imovel.id % 7 === 0 ? 'DESTAQUE' : null);
+
+            const valorFormatado = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(imovel.valor);
+            
+            // Placeholder com cores da marca FASK
+            const imagePlaceholder = `https://placehold.co/600x400/1E3A8A/FFFFFF?text=${imovel.endereco.split(',')[0]}`;
+
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-xl card-shadow overflow-hidden transition duration-300 hover:shadow-2xl hover:translate-y-[-2px]';
+            
+            card.innerHTML = `
+                <div class="relative">
+                    <!-- Imagem de Destaque -->
+                    <img src="${imagePlaceholder}" alt="Imagem do Imóvel ${imovel.id}" class="w-full h-48 object-cover">
+                    
+                    ${status ? `<span class="absolute top-3 left-3 bg-amber-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full shadow-md uppercase">${status}</span>` : ''}
+
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                        <p class="text-2xl font-black text-amber-300 drop-shadow">${valorFormatado}</p>
+                    </div>
+                </div>
+
+                <div class="p-5">
+                    <h3 class="text-lg font-bold text-gray-900 mb-3 line-clamp-1">${imovel.endereco || 'Propriedade Exclusiva'}</h3>
+                    
+                    <!-- Ícones de Recursos -->
+                    <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-100">
+                        ${getIconHtml('M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', `${numQuartos} Qtos`)}
+                        ${getIconHtml('M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z', `${numBanheiros} Banh`)}
+                        ${getIconHtml('M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m6 6l3-3 3 3', `${areaM2} m²`)}
+                    </div>
+
+                    <button class="mt-2 w-full bg-blue-800 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition duration-300 shadow-lg"
+                            onclick="openImovelDetails(${imovel.id})">
+                        Ver Detalhes Exclusivos
+                    </button>
+                </div>
+            `;
+            imoveisListElement.appendChild(card);
+        }
+
+        /**
+         * Renderiza um novo lote de imóveis (10 por vez).
+         * @param {Array} imoveis - A lista de imóveis filtrados para renderizar.
+         */
+        function renderImoveisBatch(imoveis) {
+            const start = displayedCount;
+            const end = Math.min(imoveis.length, displayedCount + PROPERTIES_PER_LOAD);
+
+            for (let i = start; i < end; i++) {
+                renderImovelCard(imoveis[i]);
+            }
+            
+            displayedCount = end;
+
+            // Atualiza o botão "Carregar Mais"
+            updateLoadMoreButton(imoveis);
+        }
+
+        /**
+         * Atualiza ou remove o botão "Carregar Mais"
+         * @param {Array} imoveis - A lista completa de imóveis filtrados.
+         */
+        function updateLoadMoreButton(imoveis) {
+            loadMoreContainer.innerHTML = '';
+
+            if (displayedCount < imoveis.length) {
+                const remaining = imoveis.length - displayedCount;
+                const button = document.createElement('button');
+                button.className = 'w-full md:w-1/3 mx-auto mt-10 bg-amber-500 text-gray-900 font-bold py-3 px-8 rounded-xl hover:bg-amber-600 transition duration-300 shadow-xl transform hover:scale-[1.01]';
+                button.textContent = `VER MAIS IMÓVEIS (${remaining} restantes)`;
+                // Passa a função de renderização com a lista filtrada
+                button.onclick = () => renderImoveisBatch(imoveis); 
+                loadMoreContainer.appendChild(button);
+            }
+        }
+
+
+        /**
+         * Aplica os filtros e inicia a renderização paginada.
+         */
+        function applyFilters() {
+            const enderecoTerm = filterEndereco.value.toLowerCase();
+            const quartosValue = filterQuartos.value;
+            const valorLimit = filterValor.value;
+            
+            // 1. Filtra todos os imóveis baseados nos critérios
+            filteredImoveisGlobal = allImoveis.filter(imovel => {
+                const enderecoText = (imovel.endereco + ' ' + imovel.descricao).toLowerCase();
+                const enderecoMatch = enderecoText.includes(enderecoTerm);
+
+                // Simulação de quartos para filtro
+                const matchQuartos = imovel.descricao ? imovel.descricao.match(/(\d+)\s*quartos?/) : null;
+                const numQuartos = matchQuartos ? parseInt(matchQuartos[1], 10) : (imovel.id % 3) + 1;
+                let quartosMatch = true;
+                if (quartosValue) {
+                    const selectedQuartos = parseInt(quartosValue, 10);
+                    if (quartosValue === '3') { 
+                        quartosMatch = numQuartos >= 3;
+                    } else {
+                        quartosMatch = numQuartos === selectedQuartos;
+                    }
+                }
+
+                // Filtrar por Valor
+                let valorMatch = true;
+                const valorImovel = parseFloat(imovel.valor) || 0; 
+                if (valorLimit) {
+                    if (valorLimit === 'max') { 
+                        valorMatch = valorImovel > 5000;
+                    } else {
+                        const limit = parseFloat(valorLimit);
+                        valorMatch = valorImovel <= limit; 
+                    }
+                }
+
+                return enderecoMatch && quartosMatch && valorMatch;
+            });
+
+            // 2. Limpa e reinicia a exibição
+            imoveisListElement.innerHTML = ''; 
+            displayedCount = 0; // Reseta a contagem
+            
+            if (filteredImoveisGlobal.length === 0) {
+                noResultsMessage.classList.remove('hidden');
+                loadMoreContainer.innerHTML = '';
+            } else {
+                noResultsMessage.classList.add('hidden');
+                // Renderiza o primeiro lote
+                renderImoveisBatch(filteredImoveisGlobal);
+            }
+        }
+
+        /**
+         * Abre o modal e preenche com os detalhes do imóvel.
+         * @param {number} id - ID do imóvel.
+         */
+        function openImovelDetails(id) {
+            const imovel = allImoveis.find(i => i.id === id);
+            
+            if (!imovel) {
+                console.error("Imóvel não encontrado:", id);
+                return;
+            }
+
+            // Simulação de Dados
+            const matchQuartos = imovel.descricao ? imovel.descricao.match(/(\d+)\s*quartos?/) : null;
+            const numQuartos = matchQuartos ? parseInt(matchQuartos[1], 10) : (imovel.id % 3) + 1;
+            const numBanheiros = Math.floor(Math.random() * 2) + 1;
+            const areaM2 = (Math.floor(Math.random() * 50) + 60) + (imovel.id * 2 % 10);
+            const entradaFormatada = new Date(imovel.entrada).toLocaleDateString('pt-BR');
+            const valorFormatado = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(imovel.valor);
+
+            // Preenchendo o Modal
+            document.getElementById('modal-endereco').textContent = imovel.endereco || 'Endereço Não Informado';
+            document.getElementById('modal-valor').textContent = valorFormatado;
+            document.getElementById('modal-descricao').textContent = imovel.descricao || 'Descrição completa não fornecida. Entre em contato para mais detalhes exclusivos.';
+            
+            // Recursos simulados
+            document.getElementById('modal-quartos').textContent = `${numQuartos} Quartos`;
+            document.getElementById('modal-banheiros').textContent = `${numBanheiros} Banheiros`;
+            document.getElementById('modal-area').textContent = `${areaM2} m² (Área Útil)`;
+            document.getElementById('modal-entrada').textContent = entradaFormatada;
+
+            // Placeholder de Imagem
+            const imagePlaceholder = `https://placehold.co/800x400/1E3A8A/FFFFFF?text=${imovel.endereco.split(',')[0]}`;
+            document.getElementById('modal-image').src = imagePlaceholder;
+
+            // Mostra o Modal
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => modalContent.classList.add('modal-shown'), 10);
+        }
+
+        /**
+         * Fecha o modal.
+         */
+        function closeModal() {
+            modalContent.classList.remove('modal-shown');
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }, 300); 
+        }
+
+
+        /**
+         * Busca e armazena todos os imóveis da API.
+         */
+        async function fetchImoveis() {
+            loadingMessage.classList.remove('hidden');
+            imoveisListElement.innerHTML = '';
+            errorMessage.classList.add('hidden');
+            noResultsMessage.classList.add('hidden');
+            loadMoreContainer.innerHTML = '';
+
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Erro na rede ao buscar os dados.');
+                
+                allImoveis = await response.json();
+                
+                if (allImoveis.length === 0) {
+                    imoveisListElement.innerHTML = '<p class="col-span-full text-center text-gray-600 text-lg p-10">Nenhum imóvel cadastrado no momento. Por favor, utilize o Painel de Administração para adicionar.</p>';
+                } else {
+                    applyFilters(); // Inicia o filtro e a paginação
+                }
+            } catch (error) {
+                console.error("Erro ao buscar os imóveis:", error);
+                errorMessage.classList.remove('hidden');
+            } finally {
+                loadingMessage.classList.add('hidden');
+            }
+        }
+
+        // Carrega os imóveis ao carregar a página
+        window.onload = fetchImoveis;
+    </script>
+</body>
+</html>
